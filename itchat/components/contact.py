@@ -1,6 +1,7 @@
 import time, re, io
 import json, copy
 import logging
+from tqdm import tqdm
 
 from .. import config, utils
 from ..returnvalues import ReturnValue
@@ -280,11 +281,13 @@ def get_contact(self, update=False):
         j = json.loads(r.content.decode('utf-8', 'replace'))
         return j.get('Seq', 0), j.get('MemberList')
     seq, memberList = 0, []
-    while 1:
-        seq, batchMemberList = _get_contact(seq)
-        memberList.extend(batchMemberList)
-        if seq == 0:
-            break
+    with tqdm(total=8) as pbar:
+        while 1:
+            seq, batchMemberList = _get_contact(seq)
+            memberList.extend(batchMemberList)
+            if seq == 0:
+                break
+            pbar.update(1)
     chatroomList, otherList = [], []
     for m in memberList:
         if m['Sex'] != 0:

@@ -297,6 +297,7 @@ def start_receiving(self, exitCallback=None, getReceivingFnOnly=False):
             exitCallback()
         else:
             logger.info('LOG OUT!')
+            sys.exit(1)
     if getReceivingFnOnly:
         return maintain_loop
     else:
@@ -318,6 +319,7 @@ def sync_check(self):
     self.loginInfo['logintime'] += 1
     try:
         r = self.s.get(url, params=params, headers=headers, timeout=config.TIMEOUT)
+        print(r)
     except requests.exceptions.ConnectionError as e:
         try:
             if not isinstance(e.args[0].args[1], BadStatusLine):
